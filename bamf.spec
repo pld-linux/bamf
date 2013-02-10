@@ -27,7 +27,6 @@ BuildRequires:	libgtop-devel
 BuildRequires:	libwnck-devel
 BuildRequires:	libwnck2-devel
 BuildRequires:	pkgconfig
-BuildRequires:	vala
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
