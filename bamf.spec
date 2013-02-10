@@ -5,7 +5,7 @@
 Summary:	Application matching framework
 Name:		bamf
 Version:	0.2.104
-Release:	1
+Release:	2
 # Library bits are LGPLv2 or LGPLv3 (but not open-ended LGPLv2+);
 # non-lib bits are GPLv3.
 # pbrobinson points out that three files in the lib are actually
@@ -58,6 +58,7 @@ This package contains the bamf daemon and supporting data.
 
 %package -n	%{name}3
 Summary:	Application matching framework (GTK+ 3 build)
+Group:		Libraries
 
 %description -n	%{name}3
 BAMF removes the headache of applications matching into a simple DBus
