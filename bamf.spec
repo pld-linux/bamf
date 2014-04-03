@@ -5,7 +5,7 @@
 Summary:	Application matching framework
 Name:		bamf
 Version:	0.2.104
-Release:	2
+Release:	3
 # Library bits are LGPLv2 or LGPLv3 (but not open-ended LGPLv2+);
 # non-lib bits are GPLv3.
 # pbrobinson points out that three files in the lib are actually
@@ -56,23 +56,23 @@ daemon and C wrapper library. Currently features application matching
 at amazing levels of accuracy (covering nearly every corner case).
 This package contains the bamf daemon and supporting data.
 
-%package -n	%{name}3
+%package -n %{name}3
 Summary:	Application matching framework (GTK+ 3 build)
 Group:		Libraries
 
-%description -n	%{name}3
+%description -n %{name}3
 BAMF removes the headache of applications matching into a simple DBus
 daemon and C wrapper library. Currently features application matching
 at amazing levels of accuracy (covering nearly every corner case).
 This package contains the bamf library built against GTK+ 3.
 
-%package -n	%{name}3-devel
+%package -n %{name}3-devel
 Summary:	Development files for %{name} (GTK+ 3 build)
 License:	GPL v2 or GPL v3
 Group:		Development/Libraries
 Requires:	%{name}3 = %{version}-%{release}
 
-%description -n	%{name}3-devel
+%description -n %{name}3-devel
 The %{name}3-devel package contains libraries and header files for
 developing applications that use %{name} (GTK+ 3 build).
 
@@ -80,6 +80,9 @@ developing applications that use %{name} (GTK+ 3 build).
 Summary:	%{name} API documentation
 Summary(pl.UTF-8):	Dokumentacja API biblioteki %{name}
 Group:		Documentation
+%if "%{_rpmversion}" >= "5"
+BuildArch:	noarch
+%endif
 
 %description apidocs
 API and internal documentation for %{name} library.
