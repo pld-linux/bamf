@@ -5,7 +5,7 @@
 Summary:	Application matching framework
 Name:		bamf
 Version:	0.2.104
-Release:	4
+Release:	5
 # Library bits are LGPLv2 or LGPLv3 (but not open-ended LGPLv2+);
 # non-lib bits are GPLv3.
 # pbrobinson points out that three files in the lib are actually
