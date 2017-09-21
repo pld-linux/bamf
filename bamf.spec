@@ -5,7 +5,7 @@
 Summary:	Application matching framework
 Name:		bamf
 Version:	0.2.104
-Release:	5
+Release:	6
 # Library bits are LGPLv2 or LGPLv3 (but not open-ended LGPLv2+);
 # non-lib bits are GPLv3.
 # pbrobinson points out that three files in the lib are actually
@@ -18,6 +18,7 @@ Group:		Libraries
 URL:		https://launchpad.net/bamf
 Source0:	http://launchpad.net/bamf/0.2/%{version}/+download/%{name}-%{version}.tar.gz
 # Source0-md5:	4271cd5979483f7e3a9bffc42fed6383
+Patch0:		%{name}-build.patch
 BuildRequires:	dbus-glib-devel
 BuildRequires:	gobject-introspection-devel
 BuildRequires:	gtk+2-devel
@@ -89,6 +90,7 @@ API and internal documentation for %{name} library.
 
 %prep
 %setup -q
+%patch0 -p1
 
 %build
 # ../.././src/bamf-legacy-window.c: In function 'bamf_legacy_window_get_class_name':
