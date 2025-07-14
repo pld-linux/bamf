@@ -88,7 +88,7 @@ API and internal documentation for %{name} library.
 
 %prep
 %setup -q
-%patch0 -p1
+%patch -P0 -p1
 
 %build
 # ../.././src/bamf-legacy-window.c: In function 'bamf_legacy_window_get_class_name':
