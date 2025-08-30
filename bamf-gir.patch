@@ -1,0 +1,12 @@
+--- bamf-0.3.6/lib/libbamf/Makefile.am.orig	2013-01-11 17:57:19.981616000 +0100
++++ bamf-0.3.6/lib/libbamf/Makefile.am	2025-08-30 18:52:30.675802776 +0200
+@@ -130,8 +130,7 @@ introspection_sources = \
+ Bamf-0.2.gir: libbamf.la
+ Bamf_0_2_gir_INCLUDES = GObject-2.0 GLib-2.0
+ Bamf_0_2_gir_CFLAGS = \
+-	--warn-all \
+-	--c-include='libbamf/libbamf.h' \
++	-include 'libbamf/libbamf.h' \
+ 	$(DBUS_CFLAGS) \
+ 	-I$(top_srcdir)/lib \
+ 	-I$(top_builddir)/lib \

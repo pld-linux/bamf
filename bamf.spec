@@ -1,3 +1,4 @@
+# TODO: libunity-webapps support?
 #
 # Conditional build:
 %bcond_without	apidocs		# API documentation
@@ -7,24 +8,27 @@
 Summary:	Application matching framework
 Summary(pl.UTF-8):	Szkielet do dopasowywania aplikacji
 Name:		bamf
-Version:	0.2.104
-Release:	6
+Version:	0.3.6
+Release:	1
 # Library bits are LGPLv2 or LGPLv3 (but not open-ended LGPLv2+);
 # non-lib bits are GPLv3.
 # pbrobinson points out that three files in the lib are actually
 # marked GPL in headers, making library GPL, though we think this
 # may not be upstream's intention. For now, marking library as
 # GPL.
-# License:	LGPLv2 or LGPLv3
+# License:	LGPL v2.1 or LGPL v3
 License:	GPL v2 or GPL v3
 Group:		Libraries
-Source0:	https://launchpad.net/bamf/0.2/%{version}/+download/%{name}-%{version}.tar.gz
-# Source0-md5:	4271cd5979483f7e3a9bffc42fed6383
-Patch0:		%{name}-build.patch
+Source0:	https://launchpad.net/bamf/0.3/%{version}/+download/%{name}-%{version}.tar.gz
+# Source0-md5:	56b0b0ac2d3f2a0401db268c78cc8527
+Patch0:		%{name}-gir.patch
 URL:		https://launchpad.net/bamf
+BuildRequires:	autoconf >= 2.63
+BuildRequires:	automake >= 1:1.11
 BuildRequires:	dbus-glib-devel >= 0.76
-BuildRequires:	glib2-devel >= 1:2.16.0
-BuildRequires:	gobject-introspection-devel >= 0.6.7
+BuildRequires:	glib2-devel >= 1:2.30.0
+BuildRequires:	gnome-common
+BuildRequires:	gobject-introspection-devel >= 0.10.2
 %{?with_gtk2:BuildRequires:	gtk+2-devel >= 1:2.0}
 %{?with_gtk3:BuildRequires:	gtk+3-devel >= 3.0}
 BuildRequires:	gtk-doc >= 1.0
@@ -33,9 +37,10 @@ BuildRequires:	libgtop-devel >= 2.0
 %{?with_gtk2:BuildRequires:	libwnck2-devel >= 2.0}
 BuildRequires:	pkgconfig
 BuildRequires:	rpm-build >= 4.6
+BuildRequires:	rpmbuild(macros) >= 2.043
 BuildRequires:	vala
 BuildRequires:	xorg-lib-libX11-devel
-Requires:	glib2 >= 1:2.16.0
+Requires:	glib2 >= 1:2.30.0
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
@@ -57,7 +62,7 @@ Summary(pl.UTF-8):	Pliki programistyczne biblioteki BAMF (dla GTK+ 2)
 License:	GPL v2 or GPL v3
 Group:		Development/Libraries
 Requires:	%{name} = %{version}-%{release}
-Requires:	glib2-devel >= 1:2.16.0
+Requires:	glib2-devel >= 1:2.30.0
 Requires:	libwnck2-devel >= 2.0
 
 %description devel
@@ -68,11 +73,23 @@ use BAMF with GTK+ 2.
 Ten pakiet zawiera pliki nagłówkowe do tworzenia aplikacji
 wykorzystujących BAMF z GTK+ 2.
 
+%package -n vala-libbamf
+Summary:	Vala API for BAMF library (GTK+ 2 build)
+Summary(pl.UTF-8):	API języka Vala do biblioteki BAMF (dla GTK+ 2)
+Group:		Development/Libraries
+Requires:	%{name}-devel = %{version}-%{release}
+
+%description -n vala-libbamf
+Vala API for BAMF library (GTK+ 2 build).
+
+%description -n vala-libbamf -l pl.UTF-8
+API języka Vala do biblioteki BAMF (dla GTK+ 2).
+
 %package -n bamf3
 Summary:	Application matching framework (GTK+ 3 library)
 Summary(pl.UTF-8):	Szkielet do dopasowywania aplikacji (biblioteka GTK+ 3)
 Group:		Libraries
-Requires:	glib2 >= 1:2.16.0
+Requires:	glib2 >= 1:2.30.0
 
 %description -n bamf3
 BAMF removes the headache of applications matching into a simple DBus
@@ -93,7 +110,7 @@ Summary(pl.UTF-8):	Pliki programistyczne biblioteki BAMF (dla GTK+ 3)
 License:	GPL v2 or GPL v3
 Group:		Development/Libraries
 Requires:	bamf3 = %{version}-%{release}
-Requires:	glib2-devel >= 1:2.16.0
+Requires:	glib2-devel >= 1:2.30.0
 Requires:	libwnck-devel >= 3.0
 
 %description -n bamf3-devel
@@ -122,7 +139,7 @@ Summary(pl.UTF-8):	Szkielet do dopasowywania aplikacji
 License:	GPL v3
 Group:		Daemons
 Requires:	dbus-glib >= 0.76
-Requires:	glib2 >= 1:2.16.0
+Requires:	glib2 >= 1:2.30.0
 
 %description daemon
 BAMF removes the headache of applications matching into a simple DBus
@@ -141,10 +158,18 @@ demona bamf i dane pomocnicze.
 %setup -q
 %patch -P0 -p1
 
-%build
 # ../.././src/bamf-legacy-window.c: In function 'bamf_legacy_window_get_class_name':
 # ../.././src/bamf-legacy-window.c:144:3: error: 'wnck_class_group_get_res_class' is deprecated (declared at /usr/include/libwnck-3.0/libwnck/class-group.h:89): Use 'wnck_class_group_get_id' instead [-Werror=deprecated-declarations]
-CFLAGS="%{rpmcflags} -Wno-error=deprecated-declarations"
+%{__sed} -i -e 's/-Werror //' configure.in
+
+%build
+%{__gtkdocize}
+%{__libtoolize}
+%{__aclocal} -I m4
+%{__autoconf}
+%{__autoheader}
+%{__automake}
+#CFLAGS="%{rpmcflags} -Wno-error=deprecated-declarations"
 
 %define configuredir ..
 
@@ -152,6 +177,8 @@ CFLAGS="%{rpmcflags} -Wno-error=deprecated-declarations"
 install -d build-gtk2
 cd build-gtk2
 %configure \
+	--disable-silent-rules \
+	--disable-webapps \
 	--with-gtk=2 \
 	--with-html-dir=%{_gtkdocdir} \
 	--enable-gtk-doc
@@ -162,7 +189,11 @@ cd ..
 %if %{with gtk3}
 install -d build-gtk3
 cd build-gtk3
+# disable introspection: same gir version as gtk2 (fixed in 0.4.0)
 %configure \
+	--disable-introspection \
+	--disable-silent-rules \
+	--disable-webapps \
 	--with-gtk=3 \
 %if %{without gtk2}
 	--with-html-dir=%{_gtkdocdir} \
@@ -204,17 +235,18 @@ rm -rf $RPM_BUILD_ROOT
 %doc TODO
 %attr(755,root,root) %{_libdir}/libbamf.so.*.*.*
 %ghost %{_libdir}/libbamf.so.0
+%{_libdir}/girepository-1.0/Bamf-0.2.typelib
 
 %files devel
 %defattr(644,root,root,755)
 %{_libdir}/libbamf.so
 %{_includedir}/libbamf
 %{_pkgconfigdir}/libbamf.pc
-# Installation of these was disabled in the 0.2.72 release commit,
-# with no explanation - http://bazaar.launchpad.net/~unity-team/bamf/trunk/revision/374
-#%{_libdir}/girepository-1.0/Bamf*.typelib
-#%{_datadir}/gir-1.0/Bamf*.gir
-#%{_datadir}/vala/vapi/Bamf*.vapi
+%{_datadir}/gir-1.0/Bamf-0.2.gir
+
+%files -n vala-libbamf
+%defattr(644,root,root,755)
+%{_datadir}/vala/vapi/libbamf.vapi
 %endif
 
 %if %{with gtk3}
