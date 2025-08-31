@@ -101,6 +101,7 @@ License:	GPL v3
 Group:		Daemons
 Requires:	dbus-glib >= 0.76
 Requires:	glib2 >= 1:2.30.0
+Conflicts:	bamf3-daemon
 
 %description daemon
 BAMF removes the headache of applications matching into a simple DBus
