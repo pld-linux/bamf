@@ -20,6 +20,7 @@ Group:		Libraries
 Source0:	https://launchpad.net/bamf/0.3/%{version}/+download/%{name}-%{version}.tar.gz
 # Source0-md5:	56b0b0ac2d3f2a0401db268c78cc8527
 Patch0:		%{name}-gir.patch
+Patch1:		%{name}-return.patch
 URL:		https://launchpad.net/bamf
 BuildRequires:	autoconf >= 2.63
 BuildRequires:	automake >= 1:1.11
@@ -117,6 +118,7 @@ demona bamf i dane pomocnicze.
 %prep
 %setup -q
 %patch -P0 -p1
+%patch -P1 -p1
 
 # ../.././src/bamf-legacy-window.c: In function 'bamf_legacy_window_get_class_name':
 # ../.././src/bamf-legacy-window.c:144:3: error: 'wnck_class_group_get_res_class' is deprecated (declared at /usr/include/libwnck-3.0/libwnck/class-group.h:89): Use 'wnck_class_group_get_id' instead [-Werror=deprecated-declarations]
@@ -177,5 +179,5 @@ rm -rf $RPM_BUILD_ROOT
 
 %files daemon
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_libdir}/bamfdaemon
+%attr(755,root,root) %{_libexecdir}/bamfdaemon
 %{_datadir}/dbus-1/services/org.ayatana.bamf.service

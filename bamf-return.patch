@@ -1,0 +1,12 @@
+error: `return' with a value, in function returning void [-Wreturn-mismatch]
+--- bamf-0.3.6/src/bamf-legacy-window-test.c.orig	2013-01-11 17:57:19.981616000 +0100
++++ bamf-0.3.6/src/bamf-legacy-window-test.c	2025-08-31 11:31:39.371670791 +0200
+@@ -359,7 +359,7 @@ bamf_legacy_window_test_set_hint (BamfLe
+   g_return_if_fail (BAMF_IS_LEGACY_WINDOW_TEST (window));
+   BamfLegacyWindowTest *self = BAMF_LEGACY_WINDOW_TEST (window);
+ 
+-  return g_hash_table_insert (self->hints, g_strdup (name), g_strdup (value));
++  g_hash_table_insert (self->hints, g_strdup (name), g_strdup (value));
+ }
+ 
+ static void
