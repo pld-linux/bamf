@@ -2,8 +2,6 @@
 #
 # Conditional build:
 %bcond_without	apidocs		# API documentation
-%bcond_without	gtk2		# GTK+ 2 library
-%bcond_without	gtk3		# GTK+ 3 library
 
 Summary:	Application matching framework
 Summary(pl.UTF-8):	Szkielet do dopasowywania aplikacji
@@ -29,12 +27,10 @@ BuildRequires:	dbus-glib-devel >= 0.76
 BuildRequires:	glib2-devel >= 1:2.30.0
 BuildRequires:	gnome-common
 BuildRequires:	gobject-introspection-devel >= 0.10.2
-%{?with_gtk2:BuildRequires:	gtk+2-devel >= 1:2.0}
-%{?with_gtk3:BuildRequires:	gtk+3-devel >= 3.0}
+BuildRequires:	gtk+2-devel >= 1:2.0
 BuildRequires:	gtk-doc >= 1.0
 BuildRequires:	libgtop-devel >= 2.0
-%{?with_gtk3:BuildRequires:	libwnck-devel >= 3}
-%{?with_gtk2:BuildRequires:	libwnck2-devel >= 2.0}
+BuildRequires:	libwnck2-devel >= 2.0
 BuildRequires:	pkgconfig
 BuildRequires:	rpm-build >= 4.6
 BuildRequires:	rpmbuild(macros) >= 2.043
@@ -85,42 +81,6 @@ Vala API for BAMF library (GTK+ 2 build).
 %description -n vala-libbamf -l pl.UTF-8
 API języka Vala do biblioteki BAMF (dla GTK+ 2).
 
-%package -n bamf3
-Summary:	Application matching framework (GTK+ 3 library)
-Summary(pl.UTF-8):	Szkielet do dopasowywania aplikacji (biblioteka GTK+ 3)
-Group:		Libraries
-Requires:	glib2 >= 1:2.30.0
-
-%description -n bamf3
-BAMF removes the headache of applications matching into a simple DBus
-daemon and C wrapper library. Currently features application matching
-at amazing levels of accuracy (covering nearly every corner case).
-This package contains the bamf library built against GTK+ 3.
-
-%description -n bamf3 -l pl.UTF-8
-BAMF rozwiązuje problem dopasowywania aplikacji za pomocą prostego
-demona DBus i biblioteki obudowującej w C. Aktualne możliwości to
-dopasowywanie aplikacji z zaskakującym poziomem dokładności
-(obejmującym prawie każdy przypadek brzegowy). Ten pakiet zawiera
-bibliotekę bamf zbudowaną dla GTK+ 3.
-
-%package -n bamf3-devel
-Summary:	Development files for BAMF library (GTK+ 3 build)
-Summary(pl.UTF-8):	Pliki programistyczne biblioteki BAMF (dla GTK+ 3)
-License:	GPL v2 or GPL v3
-Group:		Development/Libraries
-Requires:	bamf3 = %{version}-%{release}
-Requires:	glib2-devel >= 1:2.30.0
-Requires:	libwnck-devel >= 3.0
-
-%description -n bamf3-devel
-This package contains libraries and header files for developing
-applications that use BAMF with GTK+ 3.
-
-%description -n bamf3-devel -l pl.UTF-8
-Ten pakiet zawiera pliki nagłówkowe do tworzenia aplikacji
-wykorzystujących BAMF z GTK+ 3.
-
 %package apidocs
 Summary:	BAMF API documentation
 Summary(pl.UTF-8):	Dokumentacja API biblioteki BAMF
@@ -169,13 +129,6 @@ demona bamf i dane pomocnicze.
 %{__autoconf}
 %{__autoheader}
 %{__automake}
-#CFLAGS="%{rpmcflags} -Wno-error=deprecated-declarations"
-
-%define configuredir ..
-
-%if %{with gtk2}
-install -d build-gtk2
-cd build-gtk2
 %configure \
 	--disable-silent-rules \
 	--disable-webapps \
@@ -183,42 +136,14 @@ cd build-gtk2
 	--with-html-dir=%{_gtkdocdir} \
 	--enable-gtk-doc
 %{__make}
-cd ..
-%endif
-
-%if %{with gtk3}
-install -d build-gtk3
-cd build-gtk3
-# disable introspection: same gir version as gtk2 (fixed in 0.4.0)
-%configure \
-	--disable-introspection \
-	--disable-silent-rules \
-	--disable-webapps \
-	--with-gtk=3 \
-%if %{without gtk2}
-	--with-html-dir=%{_gtkdocdir} \
-	--enable-gtk-doc
-%endif
-
-%{__make}
-%endif
 
 %install
 rm -rf $RPM_BUILD_ROOT
 
-%if %{with gtk2}
-%{__make} install -C build-gtk2 \
+%{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT
 
 %{__rm} $RPM_BUILD_ROOT%{_libdir}/libbamf.la
-%endif
-
-%if %{with gtk3}
-%{__make} install -C build-gtk3 \
-	DESTDIR=$RPM_BUILD_ROOT
-
-%{__rm} $RPM_BUILD_ROOT%{_libdir}/libbamf3.la
-%endif
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -226,10 +151,6 @@ rm -rf $RPM_BUILD_ROOT
 %post	-p /sbin/ldconfig
 %postun	-p /sbin/ldconfig
 
-%post	-n bamf3 -p /sbin/ldconfig
-%postun	-n bamf3 -p /sbin/ldconfig
-
-%if %{with gtk2}
 %files
 %defattr(644,root,root,755)
 %doc TODO
@@ -247,21 +168,6 @@ rm -rf $RPM_BUILD_ROOT
 %files -n vala-libbamf
 %defattr(644,root,root,755)
 %{_datadir}/vala/vapi/libbamf.vapi
-%endif
-
-%if %{with gtk3}
-%files -n bamf3
-%defattr(644,root,root,755)
-%doc TODO
-%attr(755,root,root) %{_libdir}/libbamf3.so.*.*.*
-%ghost %{_libdir}/libbamf3.so.0
-
-%files -n bamf3-devel
-%defattr(644,root,root,755)
-%{_libdir}/libbamf3.so
-%{_includedir}/libbamf3
-%{_pkgconfigdir}/libbamf3.pc
-%endif
 
 %if %{with apidocs}
 %files apidocs
