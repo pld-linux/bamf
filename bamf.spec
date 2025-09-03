@@ -6,6 +6,7 @@
 Summary:	Application matching framework
 Summary(pl.UTF-8):	Szkielet do dopasowywania aplikacji
 Name:		bamf
+# keep 0.3.x here for gtk+2 support; gtk+3 based version in bamf3.spec
 Version:	0.3.6
 Release:	1
 # Library bits are LGPLv2 or LGPLv3 (but not open-ended LGPLv2+);
